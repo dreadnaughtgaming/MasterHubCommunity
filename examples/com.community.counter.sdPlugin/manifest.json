@@ -1,0 +1,8 @@
+{
+ "UUID":"com.community.counter","Name":"Community bridge test","Version":"1.0.0.0",
+ "Author":"MasterHUB Community","Description":"Tests button events and persistent settings through the Stream Deck protocol.",
+ "SDKVersion":2,"CodePath":"plugin.html","Icon":"icon","CategoryIcon":"icon",
+ "OS":[{"Platform":"windows","MinimumVersion":"10"}],
+ "Software":{"MinimumVersion":"6.0"},
+ "Actions":[{"UUID":"com.community.counter.count","Name":"Counter","Icon":"icon","Controllers":["Keypad"],"PropertyInspectorPath":"settings.html","States":[{"Image":"icon","Title":"Count"}]}]
+}

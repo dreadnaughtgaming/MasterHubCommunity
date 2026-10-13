@@ -1,0 +1,17 @@
+<!doctype html><meta charset="utf-8"><title>Counter plugin</title><script>
+let socket;const counts=new Map();
+function send(event,context,payload){socket.send(JSON.stringify({event,context,payload}));}
+function display(context,settings){counts.set(context,settings||{});send('setTitle',context,{title:String(settings?.count||0)});}
+function connectElgatoStreamDeckSocket(port,uuid,event){
+ socket=new WebSocket('ws://127.0.0.1:'+port);
+ socket.onopen=()=>socket.send(JSON.stringify({event,uuid}));
+ socket.onmessage=({data})=>{
+  const m=JSON.parse(data);
+  if(m.event==='willAppear'||m.event==='didReceiveSettings')display(m.context,m.payload.settings);
+  if(m.event==='keyUp'){
+   const settings={...(counts.get(m.context)||{})};settings.count=(Number(settings.count)||0)+1;
+   send('setSettings',m.context,settings);display(m.context,settings);send('showOk',m.context,{});
+  }
+ };
+}
+</script>

@@ -1,0 +1,13 @@
+<!doctype html><meta charset="utf-8"><title>Counter settings</title>
+<style>body{font:16px system-ui;background:#182536;color:white;padding:24px}input,button{font:inherit;padding:8px;margin:8px}</style>
+<h1>Counter</h1><p>This value should survive closing and reopening MasterHUB.</p>
+<label>Count <input id="count" type="number" value="0"></label><button id="save">Save</button><p id="status"></p>
+<script>
+let socket,context;
+function connectElgatoStreamDeckSocket(port,uuid,event,info,action){
+ context=JSON.parse(action).context;socket=new WebSocket('ws://127.0.0.1:'+port);
+ socket.onopen=()=>{socket.send(JSON.stringify({event,uuid}));socket.send(JSON.stringify({event:'getSettings',context}));};
+ socket.onmessage=({data})=>{const m=JSON.parse(data);if(m.event==='didReceiveSettings')document.getElementById('count').value=m.payload.settings.count||0;};
+ document.getElementById('save').onclick=()=>{socket.send(JSON.stringify({event:'setSettings',context,payload:{count:Number(document.getElementById('count').value)||0}}));document.getElementById('status').textContent='Save requested';};
+}
+</script>

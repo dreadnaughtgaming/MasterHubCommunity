@@ -1,0 +1,10 @@
+{
+  "name": "masterhub-community",
+  "version": "0.3.0",
+  "private": true,
+  "license": "MIT",
+  "scripts": {
+    "test": "node --test tests/*.test.cjs",
+    "release": "node scripts/release.cjs"
+  }
+}
