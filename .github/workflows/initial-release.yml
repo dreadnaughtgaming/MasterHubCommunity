@@ -1,0 +1,32 @@
+name: Publish initial 0.3.0 release
+on:
+  push:
+    branches: [main]
+    paths: ['initial-release/**', '.github/workflows/initial-release.yml', 'scripts/prepare-initial-release.cjs']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: initial-release-0.3.0
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: node --test tests/*.test.cjs
+      - name: Verify original signed package
+        run: node scripts/prepare-initial-release.cjs
+      - run: python scripts/package.py
+      - name: Publish 0.3.0
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          gh release create v0.3.0 release/masterhub-release.json release/masterhub-release.sig release/masterhub-community.json.gz dist/MasterHUB-Community-0.3.0-source-installer.zip --target "$RELEASE_COMMIT" --title "MasterHUB Community 0.3.0" --notes-file RELEASE-NOTES-0.3.0.md --latest

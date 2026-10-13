@@ -1,0 +1,9 @@
+release/
+dist/
+payload/
+__pycache__/
+*.pyc
+*.asar
+*.pem
+*SIGNING_KEY*
+publisher-private/

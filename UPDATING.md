@@ -2,12 +2,16 @@
 
 Repository: **https://github.com/dreadnaughtgaming/MasterHubCommunity**. No private-repository token is embedded in the client. Keep the releases public.
 
-## First publication
+## Initial 0.3.0 publication
+
+The initial publisher workflow verifies the bundled pre-signed 0.3.0 package against the source and publishes it when these files first land on main. It needs no private signing key. This is only for the original release; do not reuse its tag or run it again after publication. For later versions, configure the secret below and use the normal version-tag workflow.
+
+## Signing setup for later releases
 
 1. Put this package's project files at your existing repository's root. Keep the existing `.git` directory and MIT license. Include the hidden `.github/workflows/release.yml` and `.gitignore` files. Do not add `release/`, `dist/`, a vendor `app.asar`, or publisher private files to git.
 2. Open GitHub repository **Settings → Secrets and variables → Actions → New repository secret**.
 3. Name it **MHC_UPDATE_SIGNING_KEY**. Paste the entire single-line contents of the separately supplied `MHC_UPDATE_SIGNING_KEY.txt` as its value. It is a base64-encoded Ed25519 private PEM. **Never upload that file, put it in a release, or paste it in an issue.** Keep an offline copy. Do not regenerate it for normal releases: installed clients pin the matching public key in `bootstrap/config.json`.
-4. Commit and push the source. Then push tag `v0.3.0`. The `Community release` workflow tests, signs, packages, and publishes it. Don't manually create a conflicting release first.
+4. Commit and push the source. For the next version, increase `package.json` to `0.3.1` and push tag `v0.3.1`. The `Community release` workflow tests, signs, packages, and publishes it. Do not recreate the existing `v0.3.0` tag.
 
 Example after copying the project into your local repository:
 
@@ -17,8 +21,8 @@ git diff --cached --stat
 # Check that no private key or vendor archive appears in the staged files.
 git commit -m "Add community updater and source-only installer"
 git push origin main
-git tag v0.3.0
-git push origin v0.3.0
+git tag v0.3.1
+git push origin v0.3.1
 ```
 
 Use your actual default branch if it differs from `main`. Enable Actions if the repository prompts you. The workflow declares `contents: write`; organization policy can still restrict release creation. Never send the signing secret to the assistant or put it in git.

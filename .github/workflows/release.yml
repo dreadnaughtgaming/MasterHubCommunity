@@ -1,0 +1,29 @@
+name: Community release
+on:
+  push:
+    tags: ['v*.*.*']
+permissions:
+  contents: write
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: node --test tests/*.test.cjs
+      - name: Sign full community update
+        env:
+          MHC_UPDATE_SIGNING_KEY: ${{ secrets.MHC_UPDATE_SIGNING_KEY }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: node scripts/release.cjs "${RELEASE_TAG#v}"
+      - run: python scripts/package.py
+      - name: Publish stable release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: gh release create "$RELEASE_TAG" release/masterhub-release.json release/masterhub-release.sig release/masterhub-community.json.gz dist/*.zip --verify-tag --generate-notes --latest
