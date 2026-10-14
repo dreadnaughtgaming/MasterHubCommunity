@@ -1,3 +1,11 @@
+# Current publishing workflow
+
+Bumping `package.json` on `main` now triggers the release workflow automatically; matching version tags and the manual Run workflow button also work. Set release notes in `RELEASE-NOTES.md` before publishing.
+
+When `MHC_UPDATE_SIGNING_KEY` is configured, GitHub signs the current source. Without it, publishing requires a matching maintainer-signed package in `signed-release/`. That package is verified against the pinned public key, version, and every source file before publication. It contains no private key. Source changes without a matching signature fail closed.
+
+The initial 0.3.0 publication described below is already complete. Do not rerun the initial-release workflow. Published releases are never overwritten by the normal workflow.
+
 # Owner setup and release publishing
 
 Repository: **https://github.com/dreadnaughtgaming/MasterHubCommunity**. No private-repository token is embedded in the client. Keep the releases public.

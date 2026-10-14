@@ -1,6 +1,6 @@
 # MasterHUB Community
 
-Experimental community repairs and add-ons for Cooler Master MasterHUB **1.0.0.113** on Windows. Community version **0.3.0** adds automatic, signed updates from **dreadnaughtgaming/MasterHubCommunity**.
+Experimental community repairs and add-ons for Cooler Master MasterHUB **1.0.0.113** on Windows. Community version **0.3.1** includes automatic, signed updates from **dreadnaughtgaming/MasterHubCommunity**.
 
 This repository contains community source and a patch builder. It does not contain Cooler Master's application archive, firmware, drivers, or third-party Stream Deck plugins. It is not affiliated with Cooler Master or Elgato.
 
@@ -34,6 +34,10 @@ Installation affects the Windows account running the installer. Other Windows ac
 - No client setting changes the update source. This is open-source software; someone modifying their local code can still change it.
 
 The bootstrap and vendor integration hooks are deliberately fixed. Updates can change all community modules, including add-on and Stream Deck functionality. Changes to the bootstrap, publisher key, vendor hooks, or supported vendor version require a new installer; the updater rejects incompatible bootstrap versions.
+
+## Layout persistence in 0.3.1
+
+Choose Horizontal or Vertical once after installing this update. That choice is saved immediately per base device and restored after restarts and reconnects. Startup hardware orientation reports no longer overwrite a saved choice. Preferences live in `%APPDATA%\MasterHub\community\orientation.json`, outside the update slots.
 
 ## Features carried forward
 

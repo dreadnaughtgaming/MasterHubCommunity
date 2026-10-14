@@ -12,3 +12,9 @@ Performed 2026-10-13 in Linux with Node 24 and Python 3.12. This is not a Window
 - Package contents are selected by an explicit allowlist. Publisher private key and vendor archives are excluded. The bundled upstream MIT license is retained.
 
 Not yet verified: PowerShell execution on Windows, real Electron/device startup, GitHub Actions execution in the owner's repository, and a real download/activation from a published GitHub release. Run the Windows smoke checks in UPDATING.md before broad distribution. This version does not claim a new fix for the earlier encrypted-plugin import error.
+
+## 0.3.1 layout regression verification — 2026-10-14
+
+Added nine layout tests. Dependency-free run: 63 passed, 0 failed, one existing vendor-only WebSocket test skipped. Tests cover fresh process/store state, saved horizontal versus late vertical status reports, switching back to vertical, per-device isolation, unsaved hardware defaults, corrupt JSON backup recovery, save failures and retry, event-scope cleanup after exceptions, object-style commits, and invalid saved values.
+
+The vendor renderer's orientation mutation only changes `M00x64Direction` in memory; its device-status callback calls that same mutation. The fix restores saved values before Vue mounts and distinguishes that synchronous hardware-event path from explicit orientation changes. It does not require modified vendor hooks or a bootstrap update. No physical Windows reboot/device test was available.

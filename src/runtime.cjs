@@ -24,6 +24,7 @@ function install({store,app,ipc,base,getTwitch,getDiscord,ensureTwitch}){
   const root=path.join(base,'community'),addonRoot=path.join(root,'addons');fs.mkdirSync(addonRoot,{recursive:true});
   state={store,app,ipc,root,addonRoot,actions:new Map(),addons:[],listeners:[],logs:[],panel:null,stopped:false};
   const log=(message)=>{state.logs.push(`${new Date().toLocaleTimeString()} ${String(message).slice(0,300)}`);if(state.logs.length>40)state.logs.shift();};state.log=log;state.notify=notify;
+  state.disposeOrientation=require('./orientation.cjs').install({store,ipc,root,log});
   const vault=ipc.sendSync('dng-vault-load');let vaultBlocked=!vault?.ok;
   if(vaultBlocked)log('Account restore failed; existing encrypted file will not be overwritten.');
   const saved=vault?.ok?vault.value:null;

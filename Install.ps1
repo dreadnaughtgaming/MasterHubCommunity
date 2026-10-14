@@ -8,7 +8,8 @@ $expected='a80844ac26e9478023213095006bf88db178712fb7a2e1be7b244d8445202f3f'
 $previous=@('fe7ff676b57998eba3bf414bdabac885d2cb71dec987e236f80a07481212ec11','5f7db84866906fdeb9bc8873780b4eea4489030b2e60f99762c82aabd1f2a3b3','92b533f8fe1a3d77d27603cf6392f405e01b6588b29cf7f1643c67fa383bb80e','8078a40164d68940fbff02021b4316019ccbbeffbf67795508c4d1a3c166eeaf','9cd2df98c2be83a01358dd2d74e29330b10cb337812c4c4c757b95289b40a2b3')
 $tempBuild=$null
 try {
-    Write-Host 'MASTERHUB COMMUNITY 0.3.0 BOOTSTRAP INSTALLER' -ForegroundColor Cyan
+    $communityVersion=(Get-Content -LiteralPath (Join-Path $PSScriptRoot 'package.json') -Raw | ConvertFrom-Json).version
+    Write-Host ('MASTERHUB COMMUNITY '+$communityVersion+' BOOTSTRAP INSTALLER') -ForegroundColor Cyan
     $identity=[Security.Principal.WindowsIdentity]::GetCurrent()
     $principal=New-Object Security.Principal.WindowsPrincipal($identity)
     if (-not $principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)) { throw 'Right-click Apply.cmd and run as administrator, using the same Windows account that runs MasterHUB.' }

@@ -2,8 +2,14 @@ name: Community release
 on:
   push:
     tags: ['v*.*.*']
+    branches: [main]
+    paths: ['package.json']
+  workflow_dispatch:
 permissions:
   contents: write
+concurrency:
+  group: community-release
+  cancel-in-progress: false
 jobs:
   release:
     runs-on: ubuntu-latest
@@ -15,15 +21,35 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - name: Read release version
+        id: version
+        env:
+          EVENT_REF: ${{ github.ref }}
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          if [[ "$EVENT_REF" == refs/tags/* && "$EVENT_REF" != "refs/tags/v$VERSION" ]]; then
+            echo 'Tag does not match package version'; exit 1
+          fi
+          echo "tag=v$VERSION" >> "$GITHUB_OUTPUT"
       - run: node --test tests/*.test.cjs
-      - name: Sign full community update
+      - name: Sign or verify community update
         env:
           MHC_UPDATE_SIGNING_KEY: ${{ secrets.MHC_UPDATE_SIGNING_KEY }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: node scripts/release.cjs "${RELEASE_TAG#v}"
+        run: |
+          if [[ -n "$MHC_UPDATE_SIGNING_KEY" ]]; then
+            node scripts/release.cjs
+          else
+            node scripts/prepare-signed-release.cjs
+          fi
       - run: python scripts/package.py
       - name: Publish stable release
         env:
           GH_TOKEN: ${{ github.token }}
-          RELEASE_TAG: ${{ github.ref_name }}
-        run: gh release create "$RELEASE_TAG" release/masterhub-release.json release/masterhub-release.sig release/masterhub-community.json.gz dist/*.zip --verify-tag --generate-notes --latest
+          RELEASE_TAG: ${{ steps.version.outputs.tag }}
+          RELEASE_COMMIT: ${{ github.sha }}
+        run: |
+          if gh release view "$RELEASE_TAG" > /dev/null 2>&1; then
+            echo "Release $RELEASE_TAG already exists; leaving published assets unchanged."
+            exit 0
+          fi
+          gh release create "$RELEASE_TAG" release/masterhub-release.json release/masterhub-release.sig release/masterhub-community.json.gz dist/*.zip --target "$RELEASE_COMMIT" --notes-file RELEASE-NOTES.md --latest
