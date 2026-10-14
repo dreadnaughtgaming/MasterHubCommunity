@@ -67,7 +67,7 @@ Profile-save repairs, connection retries, encrypted account persistence, draggab
 
 ## Publishing updates
 
-See [UPDATING.md](UPDATING.md). Configure the publisher signing secret once, change community source and `package.json` version, then push a matching stable tag. GitHub Actions builds, signs and publishes the update plus the source installer. The client uses the latest **stable** release; drafts and prereleases do not update clients.
+See [UPDATING.md](UPDATING.md). On this branch use version `X.Y.Z-test.N` and channel `test`. Push the source and matching signed bundle to `test`; GitHub Actions publishes a prerelease without changing the latest stable release. Stable clients receive stable releases; Test clients receive test prereleases. Drafts are excluded.
 
 ## Verification
 
