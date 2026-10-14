@@ -3,6 +3,7 @@ const fs=require('fs'),path=require('path');
 const {atomicWriteSync}=require('./storage.cjs');
 exports.install=(electron)=>{
   const {app,ipcMain,safeStorage}=electron;
+  if(electron.BrowserWindow)require('./video/main.cjs').install(electron);
   if(electron.BrowserWindow)require('./streamdeck/main.cjs').install(electron);
   const root=path.join(app.getPath('appData'),'MasterHub','community');
   const vault=path.join(root,'accounts.enc');

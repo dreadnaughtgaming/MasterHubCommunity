@@ -64,6 +64,7 @@ function install({store,app,ipc,base,getTwitch,getDiscord,ensureTwitch}){
   if(!fs.existsSync(path.join(addonRoot,'example'))&&fs.existsSync(example)){const dest=path.join(addonRoot,'example');fs.mkdirSync(dest,{recursive:true});for(const name of ['manifest.json','index.cjs'])fs.writeFileSync(path.join(dest,name),fs.readFileSync(path.join(example,name)));}
   loadAddons();
   require('./streamdeck/renderer.cjs').attach(state);
+  require('./video/renderer.cjs').attach(state);
   setTimeout(async()=>{
     buildPanel();
     requestAnimationFrame(()=>ipc.send('mhc-renderer-ready'));
@@ -136,7 +137,11 @@ function renderPanel(){
   const btn=(label,fn,parent=panel)=>{const el=add('button',label,parent);el.style.cssText='margin:5px;padding:8px 12px;background:#245983;border:0;border-radius:5px;color:white;cursor:pointer';el.onclick=fn;return el;};
   const heading=add('h2','MasterHUB Community');
   const updateStatus=add('p','Reading update status…');
-  const showUpdate=s=>{heading.textContent='MasterHUB Community • '+s.current+' experimental';updateStatus.textContent=(s.pending?'Version '+s.pending+' downloaded. ':'')+s.message;};
+  const channelSelect=add('select','');
+  for(const [value,label] of [['stable','Stable / main'],['test','Test / experimental']]){const option=add('option',label,channelSelect);option.value=value;}
+  channelSelect.disabled=true;
+  channelSelect.onchange=async()=>{channelSelect.disabled=true;try{showUpdate(await state.ipc.invoke('mhc-update-channel',channelSelect.value));}catch(e){updateStatus.textContent=e.message;}finally{channelSelect.disabled=false;}};
+  const showUpdate=s=>{channelSelect.value=s.channel||'stable';channelSelect.disabled=false;heading.textContent='MasterHUB Community • '+s.current+' experimental';updateStatus.textContent=(s.pending?'Version '+s.pending+' downloaded. ':'')+s.message;};
   state.ipc.invoke('mhc-update-status').then(showUpdate).catch(()=>{updateStatus.textContent='Update service unavailable';});
   btn('Check for updates',async()=>{updateStatus.textContent='Checking GitHub…';try{showUpdate(await state.ipc.invoke('mhc-update-check'));}catch{updateStatus.textContent='Update check failed; current version is unchanged';}});
   add('p','Custom actions and saving repairs. Add-ons run as desktop code: install only code you trust.');

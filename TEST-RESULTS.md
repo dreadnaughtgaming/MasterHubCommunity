@@ -1,20 +1,12 @@
-# Verification — 0.3.0
+# 0.4.0-test.1 verification
 
-Performed 2026-10-13 in Linux with Node 24 and Python 3.12. This is not a Windows or hardware acceptance test.
+- 83 Node tests passed, no skips, with the installed vendor WebSocket module supplied via MASTERHUB_WS_PATH. On GitHub CI, the one vendor WebSocket integration test is skipped because vendor files are not redistributed.
+- Tests cover video target isolation, empty keys, folder back keys, page/profile/disconnect changes, frame backpressure, overlapping start/stop, driver response errors/timeouts, JPEG validation, and button restoration callbacks.
+- Updater tests cover signed metadata, tampering, interrupted activation, rollback, numeric prerelease ordering, channel isolation, intentional Test-to-older-Stable switching and two-slot retention.
+- A mocked Electron test confirms the bootstrap tray can switch from old stable code back to Test independently of renderer controls.
+- Real publisher-signed 0.3.1 and 0.4.0-test.1 bundles passed fresh installer seeding, installer upgrade staging, Test → Stable → Test activation, and two-to-one cleanup.
+- Test bundle signature, compressed hash, file hashes and exact correspondence with src verified.
+- Built the patched archive from the supported original 1.0.0.113 archive: 4,927 original entries unchanged, two modified vendor files and five bootstrap files added. Archive round-trip matched all expected files.
+- Installer package contains the generated WebM sample and signed community bundle; no vendor ASAR or private signing key.
 
-- **55 Node tests passed, 0 failed, 0 skipped** with the existing vendor WebSocket dependency supplied through `MASTERHUB_WS_PATH`.
-- In the repository's dependency-free CI run, that one vendor-dependent WebSocket loopback test is intentionally skipped. The remaining 54 tests run without downloading packages.
-- Update coverage includes numeric version ordering; signature, payload and compatibility rejection; unsafe paths and symlinks; staging and superseding a pending release; current + pending retention; activation; startup confirmation; rollback; failed-release suppression; recovery at five activation journal/rename boundaries; partial download cleanup; fixed download URLs; offline operation; invalid-download preservation; concurrent-check coalescing; bootstrap runtime path selection; duplicate-process exclusion; and main-module startup failure.
-- Previous profile, account vault, connection, action binding, Stream Deck host and importer tests continue to pass.
-- Rebuilt against the original vendor archive SHA-256 `a80844ac26e9478023213095006bf88db178712fb7a2e1be7b244d8445202f3f`. ASAR round-trip verified. Exactly two existing vendor files changed; 4 bootstrap files added; **4,927 existing entries unchanged**. No community `dng/` version is embedded in the bootstrap archive.
-- Both modified vendor JavaScript bundles pass `node --check`.
-- Generated signed 0.3.0 release and verified all installed file hashes after the Python installer seeding step. Full community download: **45,822 bytes**.
-- Package contents are selected by an explicit allowlist. Publisher private key and vendor archives are excluded. The bundled upstream MIT license is retained.
-
-Not yet verified: PowerShell execution on Windows, real Electron/device startup, GitHub Actions execution in the owner's repository, and a real download/activation from a published GitHub release. Run the Windows smoke checks in UPDATING.md before broad distribution. This version does not claim a new fix for the earlier encrypted-plugin import error.
-
-## 0.3.1 layout regression verification — 2026-10-14
-
-Added nine layout tests. Dependency-free run: 63 passed, 0 failed, one existing vendor-only WebSocket test skipped. Tests cover fresh process/store state, saved horizontal versus late vertical status reports, switching back to vertical, per-device isolation, unsaved hardware defaults, corrupt JSON backup recovery, save failures and retry, event-scope cleanup after exceptions, object-style commits, and invalid saved values.
-
-The vendor renderer's orientation mutation only changes `M00x64Direction` in memory; its device-status callback calls that same mutation. The fix restores saved values before Vue mounts and distinguishes that synchronous hardware-event path from explicit orientation changes. It does not require modified vendor hooks or a bootstrap update. No physical Windows reboot/device test was available.
+Not verified here: actual Windows installer execution, Electron window appearance, hardware video playback, achievable frame rate, codec availability, or Windows audio routing. These need testing on the user's machine. YouTube URL playback is not implemented.
