@@ -126,19 +126,16 @@ async function runURL(url,context={}){
   }catch{notify('Add-on action failed or is unavailable. Check Add-ons and its configuration.');state?.log('An add-on action failed.');}
 }
 function buildPanel(){
-  const button=document.createElement('button');button.textContent='Add-ons';button.style.cssText='position:fixed;bottom:14px;left:18px;z-index:2147483645;background:#1766a5;color:#fff;border:1px solid #6bb8f1;border-radius:8px;padding:10px 18px;cursor:pointer;font:14px Arial';
-  document.body.appendChild(button);button.onclick=()=>{if(state.panel){state.panel.remove();state.panel=null;}else renderPanel();};
+  const ui=require('./community-ui.cjs');
+  ui.register('Add-ons',()=>{if(state.panel){state.panel.remove();state.panel=null;}else renderPanel();});
+  ui.register('Updates',()=>ui.openUpdates(state.ipc));
 }
 function renderPanel(){
   state.panel?.remove();
   const panel=floatingPanel('addons','Add-ons');state.panel=panel;
   const add=(tag,text,parent=panel)=>{const el=document.createElement(tag);el.textContent=text;parent.appendChild(el);return el;};
   const btn=(label,fn,parent=panel)=>{const el=add('button',label,parent);el.style.cssText='margin:5px;padding:8px 12px;background:#245983;border:0;border-radius:5px;color:white;cursor:pointer';el.onclick=fn;return el;};
-  const heading=add('h2','MasterHUB Community');
-  const updateStatus=add('p','Reading update status…');
-  const showUpdate=s=>{heading.textContent='MasterHUB Community • '+s.current+' experimental';updateStatus.textContent=(s.pending?'Version '+s.pending+' downloaded. ':'')+s.message;};
-  state.ipc.invoke('mhc-update-status').then(showUpdate).catch(()=>{updateStatus.textContent='Update service unavailable';});
-  btn('Check for updates',async()=>{updateStatus.textContent='Checking GitHub…';try{showUpdate(await state.ipc.invoke('mhc-update-check'));}catch{updateStatus.textContent='Update check failed; current version is unchanged';}});
+  add('h2','Your add-ons');
   add('p','Custom actions and saving repairs. Add-ons run as desktop code: install only code you trust.');
   btn('Close',()=>{panel.remove();state.panel=null;});btn('Save profile now',async()=>{await state.saveProfile();renderPanel();});
   btn('Open add-ons folder',()=>require('electron').shell.openPath(state.addonRoot));btn('Reload add-ons',()=>{loadAddons();renderPanel();});
@@ -150,7 +147,7 @@ function renderPanel(){
       const line=add('div','',row);const handle=add('span','↗ '+action.label,line);bindings.draggable(handle,{url:`https://masterhub-addon.invalid/${key}`,label:action.label});btn('Run',()=>runURL(`https://masterhub-addon.invalid/${key}`,{source:'panel'}),line);btn('Copy URL',()=>{require('electron').clipboard.writeText(`https://masterhub-addon.invalid/${key}`);notify('Action URL copied.');},line);
     }
   }
-  add('h3','Status');add('pre',state.logs.join('\n')).style.whiteSpace='pre-wrap';
+  const details=add('details','');add('summary','Activity log',details);add('pre',state.logs.join('\n'),details).style.whiteSpace='pre-wrap';
 }
 module.exports={dragOverAction:bindings.dragOver,dropAction:(event,target)=>state?bindings.drop(event,target,state):false,install,obsCheck,isAddonURL,runURL,readLocal,updateTwitchTokens(username,tokens){const account=state?.store.state.sns.twitchAccounts.find(a=>a.username===username);if(account&&tokens.access_token){account.access_token=tokens.access_token;if(tokens.refresh_token)account.refresh_token=tokens.refresh_token;state.persist();}},...connections};
 Object.assign(module.exports,require('./profiles.cjs'));

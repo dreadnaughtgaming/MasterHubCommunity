@@ -1,20 +1,9 @@
-# Verification — 0.3.0
+# Verification
 
-Performed 2026-10-13 in Linux with Node 24 and Python 3.12. This is not a Windows or hardware acceptance test.
+76 automated Node tests passed with the vendor WebSocket module available, no failures or skips. GitHub CI skips that one vendor integration test because vendor code is not redistributed.
 
-- **55 Node tests passed, 0 failed, 0 skipped** with the existing vendor WebSocket dependency supplied through `MASTERHUB_WS_PATH`.
-- In the repository's dependency-free CI run, that one vendor-dependent WebSocket loopback test is intentionally skipped. The remaining 54 tests run without downloading packages.
-- Update coverage includes numeric version ordering; signature, payload and compatibility rejection; unsafe paths and symlinks; staging and superseding a pending release; current + pending retention; activation; startup confirmation; rollback; failed-release suppression; recovery at five activation journal/rename boundaries; partial download cleanup; fixed download URLs; offline operation; invalid-download preservation; concurrent-check coalescing; bootstrap runtime path selection; duplicate-process exclusion; and main-module startup failure.
-- Previous profile, account vault, connection, action binding, Stream Deck host and importer tests continue to pass.
-- Rebuilt against the original vendor archive SHA-256 `a80844ac26e9478023213095006bf88db178712fb7a2e1be7b244d8445202f3f`. ASAR round-trip verified. Exactly two existing vendor files changed; 4 bootstrap files added; **4,927 existing entries unchanged**. No community `dng/` version is embedded in the bootstrap archive.
-- Both modified vendor JavaScript bundles pass `node --check`.
-- Generated signed 0.3.0 release and verified all installed file hashes after the Python installer seeding step. Full community download: **45,822 bytes**.
-- Package contents are selected by an explicit allowlist. Publisher private key and vendor archives are excluded. The bundled upstream MIT license is retained.
+Coverage includes updater signatures, channel switching and downgrade, rollback, two-slot retention, a 35-second startup check and six-hour interval, a single Community launcher, channel-error UI recovery, status polling cleanup, profiles and Stream Deck integration. Beta also tests video frame delivery and stop/restore behavior.
 
-Not yet verified: PowerShell execution on Windows, real Electron/device startup, GitHub Actions execution in the owner's repository, and a real download/activation from a published GitHub release. Run the Windows smoke checks in UPDATING.md before broad distribution. This version does not claim a new fix for the earlier encrypted-plugin import error.
+Both publisher-signed bundles verified against source. Real-bundle migration 0.3.1 → 0.3.2 → Beta → Main passed, including two-to-one cleanup and no video modules in Main. Patched archive reconstruction preserved 4,927 entries, modified two vendor files and added five bootstrap files. Both channels use the same bootstrap archive.
 
-## 0.3.1 layout regression verification — 2026-10-14
-
-Added nine layout tests. Dependency-free run: 63 passed, 0 failed, one existing vendor-only WebSocket test skipped. Tests cover fresh process/store state, saved horizontal versus late vertical status reports, switching back to vertical, per-device isolation, unsaved hardware defaults, corrupt JSON backup recovery, save failures and retry, event-scope cleanup after exceptions, object-style commits, and invalid saved values.
-
-The vendor renderer's orientation mutation only changes `M00x64Direction` in memory; its device-status callback calls that same mutation. The fix restores saved values before Vue mounts and distinguishes that synchronous hardware-event path from explicit orientation changes. It does not require modified vendor hooks or a bootstrap update. No physical Windows reboot/device test was available.
+Windows execution, visual appearance in Electron and real hardware playback remain unverified here.

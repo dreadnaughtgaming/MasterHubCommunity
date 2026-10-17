@@ -1,6 +1,7 @@
 param(
     [ValidateSet('Apply','Restore')][string]$Mode='Apply',
-    [string]$InstallPath='C:\Program Files\Cooler Master\MasterHUB'
+    [string]$InstallPath='C:\Program Files\Cooler Master\MasterHUB',
+    [ValidateSet('stable','test')][string]$Channel='stable'
 )
 $ErrorActionPreference='Stop'
 function Hash([string]$Path) { return (Get-FileHash -LiteralPath $Path -Algorithm SHA256).Hash.ToLowerInvariant() }
@@ -42,7 +43,7 @@ try {
         if($LASTEXITCODE -ne 0) { throw 'Local patch build failed; installed app was preserved.' }
         $sourceHash=Hash $source
         $slots=Join-Path $env:APPDATA 'MasterHub\community\updates'
-        & $python @pythonArgs (Join-Path $PSScriptRoot 'scripts\seed.py') $slots
+        & $python @pythonArgs (Join-Path $PSScriptRoot 'scripts\seed.py') $slots $Channel
         if($LASTEXITCODE -ne 0) { throw 'Community release preparation failed; installed app was preserved.' }
     } else { $source=$original;$sourceHash=$expected }
     if ($current -ne $sourceHash) {
@@ -53,9 +54,9 @@ try {
         # Explicit backup path avoids PowerShell converting null to an invalid empty path.
         [System.IO.File]::Replace([System.IO.Path]::GetFullPath($staged),[System.IO.Path]::GetFullPath($target),[System.IO.Path]::GetFullPath($backup),$false)
         if ((Hash $target) -ne $sourceHash) { throw "Replacement verification failed; recovery copy is $backup" }
-        if($Mode -eq 'Apply') { @{sha256=$sourceHash;bootstrap=1}|ConvertTo-Json|Set-Content -LiteralPath $receipt -Encoding UTF8 }
+        if($Mode -eq 'Apply') { @{sha256=$sourceHash;bootstrap=2}|ConvertTo-Json|Set-Content -LiteralPath $receipt -Encoding UTF8 }
         Remove-Item -LiteralPath $backup
-    } elseif($Mode -eq 'Apply') { @{sha256=$sourceHash;bootstrap=1}|ConvertTo-Json|Set-Content -LiteralPath $receipt -Encoding UTF8 }
+    } elseif($Mode -eq 'Apply') { @{sha256=$sourceHash;bootstrap=2}|ConvertTo-Json|Set-Content -LiteralPath $receipt -Encoding UTF8 }
     Write-Host "$Mode completed. Start MasterHUB normally, without administrator rights."
     if($Mode -eq 'Apply') { Write-Host 'Add-ons shows the current version and update status. GitHub updates activate on the next full launch.' }
     else { Write-Host 'Profiles, add-ons, and account settings were preserved.' }

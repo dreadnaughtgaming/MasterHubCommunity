@@ -1,56 +1,47 @@
 # MasterHUB Community
 
-Experimental community repairs and add-ons for Cooler Master MasterHUB **1.0.0.113** on Windows. Community version **0.3.1** includes automatic, signed updates from **dreadnaughtgaming/MasterHubCommunity**.
+Version **0.3.2** (Main), for Cooler Master MasterHUB **1.0.0.113** on Windows.
 
-This repository contains community source and a patch builder. It does not contain Cooler Master's application archive, firmware, drivers, or third-party Stream Deck plugins. It is not affiliated with Cooler Master or Elgato.
+Community repairs, custom add-ons and a partial Stream Deck plugin host. This project contains community source and a patch builder, not Cooler Master's application archive, drivers or third-party plugins. It is not affiliated with Cooler Master or Elgato.
 
-## Install / upgrade from 0.2.x
+## Install
 
-1. Install Python **3.10+**, including the Python launcher, if not already installed.
-2. Download the `MasterHUB-Community-…-source-installer.zip` **release asset**, and extract it. GitHub's generic “Source code” downloads do not contain the signed initial release and cannot be installed directly.
-3. Fully exit MasterHUB through its tray icon. Close MHDaemon too if still running.
-4. Right-click `Apply.cmd` → **Run as administrator**, using the same Windows account you normally use for MasterHUB. Do not elevate with a different user's credentials.
-5. Start MasterHUB normally. Open **Add-ons**, bottom left, to see the community version and update status.
+1. Install Python 3.10+ if needed.
+2. Download the source-installer ZIP from a GitHub release and extract it. Do not use GitHub's generic Source code download.
+3. Fully exit MasterHUB and MHDaemon.
+4. Right-click Apply.cmd → Run as administrator, using your normal Windows account.
+5. Start MasterHUB. Click **Community**, bottom left.
 
-The installer builds a small bootstrap patch locally from your original vendor archive. It accepts the exact previously tested 1.0.0.113 archive and known 0.1–0.2.3 community installations with their original backup. It refuses unknown vendor versions instead of guessing patch offsets. For a non-default installation folder, run elevated PowerShell:
+Main 0.3.1 and older need this one-time installer upgrade for channel switching. Existing Beta 0.4.0-test.1 installations already have the required bootstrap and can update automatically.
 
-```powershell
-.\Install.ps1 -InstallPath 'D:\Apps\MasterHUB'
-```
+The installer accepts the supported vendor archive and recognized community installations with their original backup. Unknown versions are rejected. For another install location: `.\Install.ps1 -InstallPath 'D:\Apps\MasterHUB'`. Installation seeds only the account running the installer. Restore.cmd restores the original vendor application and preserves community data and profiles.
 
-Installation affects the Windows account running the installer. Other Windows accounts need their own seeded community slot before running this patched app. Multi-user provisioning is not automated in this release.
+## Community menu
 
-`Restore.cmd` restores the original vendor application; it preserves profiles, accounts, add-ons, and community data. Your original vendor archive remains as `resources\app.asar.community-original`. This is a fixed restore baseline, not a retained community release.
+- **Add-ons**: manage custom actions, save profiles and view the collapsible activity log.
+- **Stream Deck**: import and configure supported plugins.
+- **Updates**: installed version, Main/Beta selector, last check and Check now.
 
-## Automatic updates
+Panels can still be moved and resized independently so you can drag actions onto empty keys.
 
-- The fixed public source is https://github.com/dreadnaughtgaming/MasterHubCommunity/releases/latest.
-- A background check runs about 35 seconds after startup, then every six hours. **Check for updates** in Add-ons also checks, limited to once per minute.
-- Downloads contain the complete community code, not binary differences and not the vendor application. Ed25519 publisher signatures and SHA-256 file hashes are checked before staging and on startup.
-- Downloads do not interrupt a running stream. Fully exit and reopen MasterHUB to activate, or let a reboot and subsequent launch do so. Closing the window to the tray is not a restart.
-- At most **two installed community versions** are kept: current + pending, or new current + previous during first-start verification. The previous version is deleted after the new renderer reports ready and remains alive for 20 seconds. No downloaded update archive is kept.
-- An unconfirmed startup rolls back on the next launch. That failed version is skipped until a newer release appears. Closing the app in the first 20 seconds also counts as unconfirmed. After health confirmation deletes the old version, automatic rollback to it is no longer possible.
-- Network failures keep the existing version usable. Checks do not upload your profiles, credentials, or plugins.
-- No client setting changes the update source. This is open-source software; someone modifying their local code can still change it.
+## Updates and channels
 
-The bootstrap and vendor integration hooks are deliberately fixed. Updates can change all community modules, including add-on and Stream Deck functionality. Changes to the bootstrap, publisher key, vendor hooks, or supported vendor version require a new installer; the updater rejects incompatible bootstrap versions.
+Choose **Community → Updates → Main or Beta**. Main selects the latest stable GitHub release. Beta selects the latest numbered `-test.N` prerelease from the existing test branch. Returning to Main can intentionally install a lower version. Your settings, accounts and profiles remain outside the version folders.
 
-## Layout persistence in 0.3.1
+Checks run 35 seconds after startup and every six hours while the app runs. A channel switch checks immediately. Check now is limited to once per minute. The Updates panel refreshes displayed status every five seconds while open; this does not query GitHub.
 
-Choose Horizontal or Vertical once after installing this update. That choice is saved immediately per base device and restored after restarts and reconnects. Startup hardware orientation reports no longer overwrite a saved choice. Preferences live in `%APPDATA%\MasterHub\community\orientation.json`, outside the update slots.
+Verified downloads activate only after fully exiting and reopening MasterHUB, including after a PC reboot. Closing to tray is insufficient. No forced restarts. At most two installed community versions are kept: current + pending, then current + previous until 20 seconds of healthy renderer startup. Confirmation deletes the previous version; an unconfirmed activation rolls back on next launch.
 
-## Features carried forward
+The separate **MasterHUB Community updates** tray menu also offers channel switching. Old bootstrap-2 installations may label Beta as Test; they mean the same channel.
 
-Profile-save repairs, connection retries, encrypted account persistence, draggable/resizable Add-ons and Stream Deck panels, custom JavaScript actions, and a partial Stream Deck protocol host with integrated elgato-decrypter. See [ADDON-API.md](ADDON-API.md) and [STREAMDECK.md](STREAMDECK.md). Third-party plugins are desktop code and are not sandboxed. Compatibility with every Stream Deck plugin is not promised. The previously reported encrypted-plugin import error still needs its actual error text to diagnose; this release does not claim to fix it.
+The source stays fixed to dreadnaughtgaming/MasterHubCommunity. Ed25519 signatures and SHA-256 hashes verify updates. No source-URL setting is exposed. Full community bundles are downloaded, not binary deltas or vendor software. Network failures preserve the current version. Bootstrap or vendor-hook changes require an installer; source-module changes update automatically.
 
-## Publishing updates
+## Other features
 
-See [UPDATING.md](UPDATING.md). Configure the publisher signing secret once, change community source and `package.json` version, then push a matching stable tag. GitHub Actions builds, signs and publishes the update plus the source installer. The client uses the latest **stable** release; drafts and prereleases do not update clients.
+Persistent horizontal/vertical layout choice, profile saving repairs, connection retries and encrypted account storage remain included. Choose orientation once to save it per base. Third-party add-ons execute desktop code and are not sandboxed. Stream Deck compatibility is partial; see [STREAMDECK.md](STREAMDECK.md) and [ADDON-API.md](ADDON-API.md).
 
-## Verification
-
-See [TEST-RESULTS.md](TEST-RESULTS.md). Automated tests and patch reconstruction ran in Linux. This new updater/installer has **not been run on a Windows MasterHUB device** yet. Test the initial install and one real GitHub update before wider distribution.
+See [UPDATING.md](UPDATING.md) for publishing and [TEST-RESULTS.md](TEST-RESULTS.md) for verification limits.
 
 ## License
 
-Our source is MIT, as in [LICENSE](LICENSE). The bundled Tiebe/elgato-decrypter code retains its own MIT notice at `src/streamdeck/decrypter/LICENSE` (upstream commit `68ca6fb62b2e57e7f9834dd3b75cb99d75be96d8`). Third-party vendor software and imported plugins retain their own terms. Do not upload an entire modified vendor `app.asar` as a project release without the necessary redistribution rights.
+Community source is MIT. Bundled Tiebe/elgato-decrypter retains its MIT notice in src/streamdeck/decrypter/LICENSE. Vendor software and imported plugins retain their own terms. Do not redistribute the vendor app.asar without permission.

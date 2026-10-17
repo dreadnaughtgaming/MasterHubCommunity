@@ -1,7 +1,7 @@
 {
   "owner": "dreadnaughtgaming",
   "repo": "MasterHubCommunity",
-  "bootstrap": 1,
+  "bootstrap": 2,
   "target": "1.0.0.113",
   "publicKey": "-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEAk7SDtDxW1dk9FFgMBbuii24SAPSVuGr2UVgrnUEQloc=\n-----END PUBLIC KEY-----\n"
 }

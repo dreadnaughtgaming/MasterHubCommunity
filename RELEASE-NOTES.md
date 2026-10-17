@@ -1,17 +1,16 @@
-# MasterHUB Community 0.3.1
+# 0.3.2 — Main/Beta switching and cleaner controls
 
-Fixes the layout reverting to vertical after a restart.
+- Both Main and Beta now include **Community → Updates** with a Main/Beta selector.
+- Automatic update check 35 seconds after startup, then every six hours while running. Changing channel checks immediately; Check now is also available.
+- One bottom-left Community menu groups Add-ons, Stream Deck and Updates.
+- Clear installed version, channel, last-check time and pending restart status.
+- Consistent panel styling, resizable/draggable windows and a collapsible activity log.
+- Existing signed downloads, profile preservation and maximum two installed versions retained.
 
-- Saves Horizontal/Vertical immediately for each MasterHUB base device.
-- Restores the choice before the interface mounts.
-- Prevents startup and reconnect device-status reports from overwriting a saved preference.
-- Keeps manual switching in either direction working.
-- Stores the preference outside the update slots so future updates retain it.
+## Installation
 
-**After updating, select your preferred layout once.** Earlier versions did not save this choice, so it cannot be recovered automatically.
+**Main 0.3.1 and older require a one-time installer upgrade** because their bootstrap cannot switch channels. Download the source-installer ZIP, extract it, fully exit MasterHUB and MHDaemon, then run Apply.cmd as administrator using your normal Windows account. Python 3.10+ is required.
 
-Existing 0.3.0 users: open **Add-ons → Check for updates**, wait for 0.3.1 to download, then fully exit MasterHUB from the tray and reopen it. Wait at least 20 seconds for startup confirmation. No administrator reinstall is required.
+Existing 0.4.0-test.1 users can receive this Beta update automatically or switch to Main using their existing channel selector. After installation, open **Community → Updates**. Select Main or Beta; completely exit and reopen MasterHUB after the download. The updater never restarts the app during use.
 
-New users: download the **source-installer.zip** release asset, extract it, close MasterHUB and MHDaemon, and run **Apply.cmd** as administrator. Requires the supported vendor build 1.0.0.113 and Python 3.10+.
-
-Regression tests cover fresh-start restoration, delayed/repeated hardware reports, reconnects, both directions, separate devices, corrupt-file recovery, and write failures. Windows/device confirmation is still needed. Stream Deck compatibility and the earlier encrypted-plugin import issue are unchanged.
+Beta remains the existing `test` GitHub branch and `-test.N` prerelease series; Main uses stable releases. Video remains Beta-only. No Windows hardware or visual verification was performed for this release; automated tests and installer reconstruction passed.

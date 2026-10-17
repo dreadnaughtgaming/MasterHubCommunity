@@ -12,6 +12,8 @@ exports.start=electron=>{
   const checker=require('./network.cjs').createChecker(slots,config);
   ipcMain.handle('mhc-update-status',()=>checker.status());
   ipcMain.handle('mhc-update-check',()=>checker.check());
+  ipcMain.handle('mhc-update-channel',(_event,channel)=>checker.selectChannel(channel));
+  if(electron.Tray)require('./channels-ui.cjs').install(electron,checker);
   let healthTimer=null;
   ipcMain.on('mhc-renderer-ready',e=>{
    if(healthTimer||!e.sender.getURL().startsWith('app://'))return;
