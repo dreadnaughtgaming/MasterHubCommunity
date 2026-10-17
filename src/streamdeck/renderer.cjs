@@ -72,6 +72,6 @@ function attach(state){
   }
   updatePreviews();el('h3','Plugin messages');const logs=el('pre',snapshot.logs.join('\n'));logs.dataset.pluginLog='1';logs.style.whiteSpace='pre-wrap';
  };
- setTimeout(()=>{const b=document.createElement('button');b.textContent='Stream Deck';b.style.cssText='position:fixed;bottom:14px;left:128px;z-index:2147483645;background:#1766a5;color:white;border:1px solid #6bb8f1;border-radius:8px;padding:10px 18px;cursor:pointer;font:14px Arial';b.onclick=render;document.body.appendChild(b);command({type:'list'}).then(refreshSlots);},1200);
+ setTimeout(()=>{require('../community-ui.cjs').register('Stream Deck',render);command({type:'list'}).then(refreshSlots);},1200);
 }
 module.exports={attach,contextFromURL,slotsFromGetters};

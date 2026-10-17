@@ -38,6 +38,6 @@ function attach(state){
   const cleanup=async()=>{if(closed)return;closed=true;await halt();video.removeAttribute('src');video.load();if(objectURL)URL.revokeObjectURL(objectURL);window.removeEventListener('beforeunload',cleanup);const old=panel;panel=null;old.remove();};
   close.onclick=cleanup;window.addEventListener('beforeunload',cleanup);refreshKeys();
  }
- setTimeout(()=>{const b=document.createElement('button');b.textContent='Video • Test';b.style.cssText='position:fixed;bottom:14px;left:265px;z-index:2147483645;background:#79551c;color:white;border:1px solid #d4ab66;border-radius:8px;padding:10px 18px;cursor:pointer;font:14px Arial';b.onclick=open;document.body.appendChild(b);},1300);
+ setTimeout(()=>require('../community-ui.cjs').register('Video · Beta',open),1300);
 }
 module.exports={attach};

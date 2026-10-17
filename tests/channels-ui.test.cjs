@@ -7,7 +7,7 @@ test('bootstrap tray can return from older Stable to Test without renderer contr
  const checker={status:()=>({current:'0.3.1',currentChannel:'stable',channel,message:'Ready'}),selectChannel:async x=>{channel=x;},check:async()=>checked++};
  require('../bootstrap/channels-ui.cjs').install(electron,checker);await new Promise(r=>setImmediate(r));
  assert.equal(tray.tooltip,'MasterHUB Community updates');
- await tray.menu.find(x=>x.label==='Test / experimental').click();assert.equal(channel,'test');assert.equal(tray.menu[2].checked,true);
+ await tray.menu.find(x=>x.label==='Beta / experimental').click();assert.equal(channel,'test');assert.equal(tray.menu[2].checked,true);
  await tray.menu.find(x=>x.label==='Check for updates').click();assert.equal(checked,1);assert.equal(dialogs.length,2);
  quit();assert.equal(tray.destroyed,true);
 });

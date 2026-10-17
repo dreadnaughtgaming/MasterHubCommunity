@@ -10,8 +10,8 @@ function install(electron,checker){
    const act=async fn=>{try{await fn();}catch(e){await dialog.showMessageBox({type:'error',title:'MasterHUB Community updates',message:e.message});}menu();};
    const menu=()=>{const s=checker.status();tray.setContextMenu(Menu.buildFromTemplate([
     {label:`Community ${s.current}`,enabled:false},
-    {label:'Stable / main',type:'radio',checked:s.channel==='stable',click:()=>act(async()=>{await checker.selectChannel('stable');await show();})},
-    {label:'Test / experimental',type:'radio',checked:s.channel==='test',click:()=>act(async()=>{await checker.selectChannel('test');await show();})},
+    {label:'Main / stable',type:'radio',checked:s.channel==='stable',click:()=>act(async()=>{await checker.selectChannel('stable');await show();})},
+    {label:'Beta / experimental',type:'radio',checked:s.channel==='test',click:()=>act(async()=>{await checker.selectChannel('test');await show();})},
     {type:'separator'},{label:'Check for updates',click:()=>act(async()=>{await checker.check();await show();})},
     {label:'Version and update status',click:()=>act(show)}
    ]));};

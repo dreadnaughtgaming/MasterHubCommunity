@@ -1,12 +1,9 @@
-# 0.4.0-test.1 verification
+# Verification
 
-- 83 Node tests passed, no skips, with the installed vendor WebSocket module supplied via MASTERHUB_WS_PATH. On GitHub CI, the one vendor WebSocket integration test is skipped because vendor files are not redistributed.
-- Tests cover video target isolation, empty keys, folder back keys, page/profile/disconnect changes, frame backpressure, overlapping start/stop, driver response errors/timeouts, JPEG validation, and button restoration callbacks.
-- Updater tests cover signed metadata, tampering, interrupted activation, rollback, numeric prerelease ordering, channel isolation, intentional Test-to-older-Stable switching and two-slot retention.
-- A mocked Electron test confirms the bootstrap tray can switch from old stable code back to Test independently of renderer controls.
-- Real publisher-signed 0.3.1 and 0.4.0-test.1 bundles passed fresh installer seeding, installer upgrade staging, Test → Stable → Test activation, and two-to-one cleanup.
-- Test bundle signature, compressed hash, file hashes and exact correspondence with src verified.
-- Built the patched archive from the supported original 1.0.0.113 archive: 4,927 original entries unchanged, two modified vendor files and five bootstrap files added. Archive round-trip matched all expected files.
-- Installer package contains the generated WebM sample and signed community bundle; no vendor ASAR or private signing key.
+87 automated Node tests passed with the vendor WebSocket module available, no failures or skips. GitHub CI skips that one vendor integration test because vendor code is not redistributed.
 
-Not verified here: actual Windows installer execution, Electron window appearance, hardware video playback, achievable frame rate, codec availability, or Windows audio routing. These need testing on the user's machine. YouTube URL playback is not implemented.
+Coverage includes updater signatures, channel switching and downgrade, rollback, two-slot retention, a 35-second startup check and six-hour interval, a single Community launcher, channel-error UI recovery, status polling cleanup, profiles and Stream Deck integration. Beta also tests video frame delivery and stop/restore behavior.
+
+Both publisher-signed bundles verified against source. Real-bundle migration 0.3.1 → 0.3.2 → Beta → Main passed, including two-to-one cleanup and no video modules in Main. Patched archive reconstruction preserved 4,927 entries, modified two vendor files and added five bootstrap files. Both channels use the same bootstrap archive.
+
+Windows execution, visual appearance in Electron and real hardware playback remain unverified here.

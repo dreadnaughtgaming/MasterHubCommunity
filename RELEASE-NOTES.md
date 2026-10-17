@@ -1,19 +1,16 @@
-# 0.4.0-test.1 — local video experiment
+# 0.4.0-test.2 — Main/Beta switching and cleaner controls
 
-Test branch only. Stable/main remains 0.3.1.
+- Both Main and Beta now include **Community → Updates** with a Main/Beta selector.
+- Automatic update check 35 seconds after startup, then every six hours while running. Changing channel checks immediately; Check now is also available.
+- One bottom-left Community menu groups Add-ons, Stream Deck and Updates, plus experimental Video in Beta.
+- Clear installed version, channel, last-check time and pending restart status.
+- Consistent panel styling, resizable/draggable windows and a collapsible activity log.
+- Existing signed downloads, profile preservation and maximum two installed versions retained.
 
-- Play a local video on one empty 15-key or 4-key module button, with audio on normal Windows output.
-- Choose 1–5 FPS (default 2); frame delivery waits for the driver reply.
-- Stop, close, disconnect or change layouts to stop delivery; restore the current key image where possible.
-- Resizable Video • Test panel and generated `examples/video-demo.webm` sample.
-- Stable/Test channel selection, including returning to older stable releases.
-- Persistent community update tray menu so channel switching remains available on older stable versions.
-- At most two installed community versions, then one after startup confirmation.
+## Installation
 
-## Install
+**Main 0.3.1 and older require a one-time installer upgrade** because their bootstrap cannot switch channels. Download the source-installer ZIP, extract it, fully exit MasterHUB and MHDaemon, then run Apply.cmd as administrator using your normal Windows account. Python 3.10+ is required.
 
-Download the source-installer ZIP below, extract it, fully exit MasterHUB and MHDaemon, then run Apply.cmd as administrator using your usual Windows account. Python 3.10+ is required. This one-time installer upgrades the bootstrap; the old automatic updater cannot install it.
+Existing 0.4.0-test.1 users can receive this Beta update automatically or switch to Main using their existing channel selector. After installation, open **Community → Updates**. Select Main or Beta; completely exit and reopen MasterHUB after the download. The updater never restarts the app during use.
 
-Open Video • Test, choose the sample or a local video, select an empty key and press Play. Keep the app window open. YouTube URLs and multi-key video are not included yet. Actual Windows/hardware playback has not been verified; start at 2 FPS.
-
-To change channel, use Add-ons or the Windows tray icon named MasterHUB Community updates. Fully exit and reopen after a download. On Stable 0.3.1 use that tray menu to return to Test.
+Beta remains the existing `test` GitHub branch and `-test.N` prerelease series; Main uses stable releases. Video remains Beta-only. No Windows hardware or visual verification was performed for this release; automated tests and installer reconstruction passed.
